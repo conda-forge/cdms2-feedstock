@@ -4,6 +4,8 @@ c_compiler:
 - clang
 fortran_compiler:
 - gfortran
+libpng:
+- 1.6.34
 macos_machine:
 - x86_64-apple-darwin13.4.0
 macos_min_version:
@@ -11,6 +13,8 @@ macos_min_version:
 numpy:
 - '1.9'
 pin_run_as_build:
+  libpng:
+    max_pin: x.x
   python:
     min_pin: x.x
     max_pin: x.x
