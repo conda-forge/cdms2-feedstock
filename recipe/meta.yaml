@@ -1,57 +1,53 @@
-{% set name = "cdms2" %}
-{% set version = "3.1.0" %}
+{% set name = "cdtime" %}
+{% set version = "3.1.2" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/CDAT/cdms/archive/v{{ version }}.tar.gz
-  sha256: 378bdbefef8c87f436e932d4e8bc0ba08e12c9f04e81e049eb3f35cc662cb8f7
+  url: https://github.com/cdat/cdtime/archive/v{{ version }}.tar.gz
+  sha256: e6aa613bb509a67f8dc0050d68ffc86c33099e19cfb2b64374b53131b9646e52
 
 build:
   number: 0
-  skip: True  # [win] 
+  skip: True  # [win]
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('fortran') }}
+
   host:
-    - python
+    - python {{ python }}
+    - setuptools
+    - libcdms
+    - numpy
+    - cdat_info
+    - libdrs_f
+
+  run:
+    - python {{ python }}
     - setuptools
     - libcdms
     - cdat_info
-    - numpy
-    - libdrs_f 
-  run:
-    - python
-    - libcf
-    - distarray
-    - cdtime
-    - libcdms 
-    - cdat_info
-    - {{ pin_compatible('numpy') }}
-    - esmf >=7.1.*
-    - esmpy >=7.1.*
     - libdrs_f
-    - pyopenssl
+    - {{ pin_compatible('numpy') }}
 
 test:
-  commands:
-      - export UVCDAT_ANONYMOUS_LOG=false && python -c "import cdms2"
+  imports:
+    - cdtime
 
 about:
-  home: https://cdms.readthedocs.io/en/latest
+  home:  http://gitub.com/CDAT/cdtime
   license: '3-Clause BSD'
   license_file: 'bsd-3-clause.txt'
-  summary: 'Community Data Management System'
+  summary: 'Climate calendar manipulation tools'
   description: |
-    The Community Data Management System is an object-oriented
-    data management system, specialized for organizing
-    multidimensional, gridded data used in climate
-    analysis and simulation.
-  dev_url: http://github.com/CDAT/cdms2
+      The cdtime module contains functions for converting between
+      these forms, based on the common calendars used in climate
+      simulation. Basic arithmetic and comparison operators are also available.
+  dev_url: https://github.com/CDAT/cdtime
 
 extra:
   recipe-maintainers:

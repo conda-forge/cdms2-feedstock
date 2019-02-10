@@ -1,25 +1,45 @@
+<<<<<<< HEAD
 About cdms2
 ===========
 
 Home: https://cdms.readthedocs.io/en/latest
+=======
+About cdtime
+============
+
+Home: http://gitub.com/CDAT/cdtime
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 
 Package license: 3-Clause BSD
 
 Feedstock license: BSD 3-Clause
 
+<<<<<<< HEAD
 Summary: Community Data Management System
 
 The Community Data Management System is an object-oriented
 data management system, specialized for organizing
 multidimensional, gridded data used in climate
 analysis and simulation.
+=======
+Summary: Climate calendar manipulation tools
+
+The cdtime module contains functions for converting between
+these forms, based on the common calendars used in climate
+simulation. Basic arithmetic and comparison operators are also available.
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 
 
 Current build status
 ====================
 
+<<<<<<< HEAD
 [![Linux](https://img.shields.io/circleci/project/github/conda-forge/cdms2-feedstock/master.svg?label=Linux)](https://circleci.com/gh/conda-forge/cdms2-feedstock)
 [![OSX](https://img.shields.io/travis/conda-forge/cdms2-feedstock/master.svg?label=macOS)](https://travis-ci.org/conda-forge/cdms2-feedstock)
+=======
+[![Linux](https://img.shields.io/circleci/project/github/conda-forge/cdtime-feedstock/master.svg?label=Linux)](https://circleci.com/gh/conda-forge/cdtime-feedstock)
+[![OSX](https://img.shields.io/travis/conda-forge/cdtime-feedstock/master.svg?label=macOS)](https://travis-ci.org/conda-forge/cdtime-feedstock)
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 ![Windows disabled](https://img.shields.io/badge/Windows-disabled-lightgrey.svg)
 
 Current release info
@@ -27,17 +47,27 @@ Current release info
 
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
+<<<<<<< HEAD
 | [![Conda Recipe](https://img.shields.io/badge/recipe-cdms2-green.svg)](https://anaconda.org/conda-forge/cdms2) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/cdms2.svg)](https://anaconda.org/conda-forge/cdms2) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/cdms2.svg)](https://anaconda.org/conda-forge/cdms2) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/cdms2.svg)](https://anaconda.org/conda-forge/cdms2) |
 
 Installing cdms2
 ================
 
 Installing `cdms2` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
+=======
+| [![Conda Recipe](https://img.shields.io/badge/recipe-cdtime-green.svg)](https://anaconda.org/conda-forge/cdtime) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/cdtime.svg)](https://anaconda.org/conda-forge/cdtime) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/cdtime.svg)](https://anaconda.org/conda-forge/cdtime) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/cdtime.svg)](https://anaconda.org/conda-forge/cdtime) |
+
+Installing cdtime
+=================
+
+Installing `cdtime` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 
 ```
 conda config --add channels conda-forge
 ```
 
+<<<<<<< HEAD
 Once the `conda-forge` channel has been enabled, `cdms2` can be installed with:
 
 ```
@@ -48,6 +78,18 @@ It is possible to list all of the versions of `cdms2` available on your platform
 
 ```
 conda search cdms2 --channel conda-forge
+=======
+Once the `conda-forge` channel has been enabled, `cdtime` can be installed with:
+
+```
+conda install cdtime
+```
+
+It is possible to list all of the versions of `cdtime` available on your platform with:
+
+```
+conda search cdtime --channel conda-forge
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 ```
 
 
@@ -87,17 +129,28 @@ Terminology
                   produce the finished article (built conda distributions)
 
 
+<<<<<<< HEAD
 Updating cdms2-feedstock
 ========================
 
 If you would like to improve the cdms2 recipe or build a new
+=======
+Updating cdtime-feedstock
+=========================
+
+If you would like to improve the cdtime recipe or build a new
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 package version, please fork this repository and submit a PR. Upon submission,
 your changes will be run on the appropriate platforms to give the reviewer an
 opportunity to confirm that the changes result in a successful build. Once
 merged, the recipe will be re-built and uploaded automatically to the
 `conda-forge` channel, whereupon the built conda packages will be available for
 everybody to install and use from the `conda-forge` channel.
+<<<<<<< HEAD
 Note that all branches in the conda-forge/cdms2-feedstock are
+=======
+Note that all branches in the conda-forge/cdtime-feedstock are
+>>>>>>> 22c983de4c479888ba9ec7ca47c07ae2217b76c7
 immediately built and any created packages are uploaded, so PRs should be based
 on branches in forks and branches in the main repository should only be used to
 build distinct package versions.
