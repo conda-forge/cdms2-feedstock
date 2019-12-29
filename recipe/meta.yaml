@@ -21,6 +21,7 @@ requirements:
   host:
     - python
     - setuptools
+    - cython
     - cdat_info 
     - numpy
     - libcdms 
