@@ -10,7 +10,7 @@ source:
   sha256: 106456b6e3c0fb05f65d23c2d259a9d995d54091f75393d2c845f0462ed8dc02
 
 build:
-  number: 6
+  number: 7
   skip: True  # [win] 
 
 requirements:
@@ -19,34 +19,34 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('fortran') }}
   host:
-    - python {{ python }}
+    - python
     - setuptools
-    - cdat_info >=8.2
+    - cdat_info 
     - numpy
-    - libcdms >=3.1.2
-    - libdrs_f >=3.1.2
-    - libdrs >=3.1.2
-    - cdtime >=3.1.2
+    - libcdms 
+    - libdrs_f
+    - libdrs
+    - cdtime
     - openblas
     - lazy-object-proxy
-    - libnetcdf
+    - libnetcdf >=4.6.2,<4.6.3.0a0
   run:
-    - python {{ python }}
+    - python
     - libcf
     - distarray
     - lazy-object-proxy
     - cdtime
-    - cdat_info >=8.2
+    - cdat_info
     - {{ pin_compatible('numpy') }}
     - esmf
     - esmpy
     - six
-    - libcdms >=3.1.2
-    - libdrs_f >=3.1.2
-    - libdrs >=3.1.2
-    - cdtime >=3.1.2
+    - libcdms
+    - libdrs_f
+    - libdrs
+    - cdtime
     - openblas
-    - libnetcdf
+    - libnetcdf  >=4.6.2,<4.6.3.0a0
 
 test:
   commands:
