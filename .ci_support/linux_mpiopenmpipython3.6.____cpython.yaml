@@ -18,6 +18,8 @@ fortran_compiler_version:
 - '7'
 libnetcdf:
 - 4.7.4
+mpi:
+- openmpi
 numpy:
 - '1.14'
 openblas:
@@ -29,4 +31,4 @@ pin_run_as_build:
     min_pin: x.x
     max_pin: x.x
 python:
-- 3.8.* *_cpython
+- 3.6.* *_cpython
