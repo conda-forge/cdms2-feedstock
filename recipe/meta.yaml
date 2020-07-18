@@ -11,9 +11,10 @@ source:
   patches:
     - 0001-Fixes-issue-creating-file-on-OSX-when-compiled-with-clang-and--fstack-protector-string.patch
     - 0002-replaced-numpy.rank-with-numpy.ndim-adding-test_setd.patch
+    - 0003-update-dictionary-calls-for-python-3.patch
 
 build:
-  number: 10
+  number: 11
   skip: True  # [win] 
 
 requirements:

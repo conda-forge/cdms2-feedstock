@@ -1,0 +1,108 @@
+From 079621f5077afb747241378b6e367fe14f24f78a Mon Sep 17 00:00:00 2001
+From: Ryan Forsyth <forsyth2@llnl.gov>
+Date: Fri, 10 Jul 2020 15:51:03 -0700
+Subject: [PATCH] Update dictionary calls for Python 3
+
+---
+ Lib/cdscan.py  | 16 ++++++++--------
+ Lib/dataset.py |  4 ++--
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/Lib/cdscan.py b/Lib/cdscan.py
+index 63be542a..8a1b2b61 100644
+--- a/Lib/cdscan.py
++++ b/Lib/cdscan.py
+@@ -287,7 +287,7 @@ def combineKeys(mydict, typedict, timeIsLinear=0,
+     global verbose
+ 
+     # Sort the projected time, level indices
+-    keys = OrderedDict(sorted(mydict.items())).keys()
++    keys = list(OrderedDict(sorted(mydict.items())).keys())
+ 
+     axislist = []
+     prevend = None
+@@ -396,7 +396,7 @@ def useKeys(mydict, typedict, timeIsLinear=0,
+     global verbose
+ 
+     # Sort the projected time, level indices
+-    keys = OrderedDict(sorted(mydict.items())).keys()
++    keys = list(OrderedDict(sorted(mydict.items())).keys())
+ 
+     axislist = []
+     name0 = None
+@@ -1118,7 +1118,7 @@ def gensuffix(m, mo=mo):
+                 # was if axis.isTime() and hasattr(axis, 'bounds'):
+                 if axis.isTime() and (axis.getBounds() is not None):
+                     tmpdict[axis.bounds] = 1
+-            boundsids = tmpdict.keys()
++            boundsids = list(tmpdict.keys())
+ 
+         # For forecasts, get the time at which the forecast begins (tau=0) which
+         # is nbdate,nbsec
+@@ -1133,7 +1133,7 @@ def gensuffix(m, mo=mo):
+                 nbsec, cdtime.Seconds)  # fctau0 as type comptime
+             fc_time_attrs = []
+ 
+-        varnames = f.variables.keys()
++        varnames = list(f.variables.keys())
+ 
+         # Try to force all axes to be included, but only small ones, length<100.
+         # This section was motivated by a need to preserve the cloud axes isccp_prs,isccp_tau.
+@@ -1377,7 +1377,7 @@ def gensuffix(m, mo=mo):
+     # identical varentry values.
+     varindex = []
+ #    varnames = sorted(filemap.keys())
+-    varnames = OrderedDict(sorted(filemap.items())).keys()
++    varnames = list(OrderedDict(sorted(filemap.items())).keys())
+ 
+     for varname in varnames:
+         varentry = sorted(filemap[varname])
+@@ -1663,7 +1663,7 @@ def gensuffix(m, mo=mo):
+             else:
+                 newslicedict[(i0, i1, j0, j1, fctau0)] = path
+ #        keys = sorted(newslicedict.keys())
+-        keys = OrderedDict(sorted(newslicedict.items())).keys()
++        keys = list(OrderedDict(sorted(newslicedict.items())).keys())
+ 
+         newslicelist = []
+         for i0, i1, j0, j1, fctau0 in keys:
+@@ -1715,7 +1715,7 @@ def gensuffix(m, mo=mo):
+     validateAttrs(datasetnode)
+ 
+     timeWasOverridden = 0
+-    keys = OrderedDict(sorted(axisdict.items())).keys()
++    keys = list(OrderedDict(sorted(axisdict.items())).keys())
+     for key in keys:
+         axis = axisdict[key]
+         tcode = axis.typecode()
+@@ -1776,7 +1776,7 @@ def gensuffix(m, mo=mo):
+ #    keys = sorted(vardict.keys())
+ #    keys = vardict.keys()
+ #    keys = list(keys).sort()
+-    keys = OrderedDict(sorted(vardict.items())).keys()
++    keys = list(OrderedDict(sorted(vardict.items())).keys())
+     for key in keys:
+         if (includeList is not None) and (key not in includeList):
+             continue
+diff --git a/Lib/dataset.py b/Lib/dataset.py
+index 906ca38a..41230d03 100644
+--- a/Lib/dataset.py
++++ b/Lib/dataset.py
+@@ -1080,7 +1080,7 @@ def getPaths(self):
+         for var in list(self.variables.values()):
+             for path, stuple in var.getPaths():
+                 pathdict[path] = 1
+-        result = sorted(pathdict.keys())
++        result = sorted(list(pathdict.keys()))
+         return result
+ 
+     # Open a data file associated with this dataset.
+@@ -1340,7 +1340,7 @@ def __init__(self, path, mode, hostObj=None, mpiBarrier=False):
+                 else:
+                     cdunifvar = None
+                 self.axes[name] = FileAxis(self, name, cdunifvar)
+-            self.axes = OrderedDict(sorted(self.axes.items()))
++            self.axes = OrderedDict(sorted(list(self.axes.items())))
+ 
+             # Attach boundary variables
+             for name in coordsaux:
