@@ -5,7 +5,7 @@ Home: http://github.com/CDAT/cdms
 
 Package license: BSD-3-Clause
 
-Feedstock license: BSD 3-Clause
+Feedstock license: BSD-3-Clause
 
 Summary: Community Data Management System
 
