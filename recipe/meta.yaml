@@ -12,7 +12,7 @@ source:
     - 0001-fix_version-fix_readthedocs_build_failures.patch
 
 build:
-  number: 3
+  number: 4
   skip: True  # [win] 
 
 requirements:
@@ -26,8 +26,6 @@ requirements:
     - cdat_info
     - numpy
     - libcdms
-    - libdrs_f
-    - libdrs
     - cdtime
     - openblas
     - lazy-object-proxy
@@ -45,8 +43,6 @@ requirements:
     - esmpy
     - six
     - libcdms
-    - libdrs_f
-    - libdrs
     - cdtime
     - openblas
     - libnetcdf
