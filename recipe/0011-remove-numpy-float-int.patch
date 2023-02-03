@@ -1,0 +1,16 @@
+diff -ruN cdms-3.1.5/Lib/MV2.py cdms-3.1.5-patch/Lib/MV2.py
+--- cdms-3.1.5/Lib/MV2.py	2020-07-30 19:01:33.000000000 -0600
++++ cdms-3.1.5-patch/Lib/MV2.py	2023-02-03 00:10:41.786251432 -0700
+@@ -3,9 +3,9 @@
+ 
+ "CDMS Variable objects, MaskedArray interface"
+ import numpy
+-from numpy import character, float, float32, float64  # noqa
+-from numpy import int, int8, int16, int32, int64, byte  # noqa
+-from numpy import ubyte, uint8, uint16, uint32, uint64, long   # noqa
++from numpy import character, float32, float64  # noqa
++from numpy import int8, int16, int32, int64, byte  # noqa
++from numpy import ubyte, uint8, uint16, uint32, uint64   # noqa
+ from numpy.ma import allclose, allequal, common_fill_value  # noqa
+ from numpy.ma import make_mask_none, dot, filled  # noqa
+ from numpy.ma import getmask, getmaskarray, identity  # noqa
