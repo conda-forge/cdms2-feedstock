@@ -19,9 +19,10 @@ source:
     - 0008-fixes-missing-PY_SSIZE_T_CLEAN-define.patch
     - 0009-changes-int-to-Py_ssize_t-to-allow-PY_SSIZE_T_CLEAN.patch
     - 0010-Adds-LongLong-type-for-CDML.patch
+    - 0011-remove-numpy-float-int.patch
 
 build:
-  number: 14
+  number: 15
   skip: True  # [win] 
 
 requirements:
