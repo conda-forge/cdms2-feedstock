@@ -22,22 +22,19 @@ source:
     - 0011-remove-numpy-float-int.patch
 
 build:
-  number: 16
+  number: 17
   skip: True  # [win] 
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}
   host:
     - python
     - setuptools
     - cdat_info
     - numpy
     - libcdms 3
-    - libdrs_f
-    - libdrs
     - cdtime 3
     - openblas
     - lazy-object-proxy
@@ -56,8 +53,6 @@ requirements:
     - esmpy
     - six
     - libcdms 3
-    - libdrs_f
-    - libdrs
     - cdtime 3
     - openblas
     - libnetcdf
