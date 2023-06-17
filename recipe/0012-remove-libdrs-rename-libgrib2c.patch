@@ -1,0 +1,21 @@
+diff -ruN cdms-3.1.5-prev-patches/setup.py cdms-3.1.5-libgrib2c-patch/setup.py
+--- cdms-3.1.5-prev-patches/setup.py	2023-06-17 13:57:18.108001431 +0200
++++ cdms-3.1.5-libgrib2c-patch/setup.py	2023-06-17 13:59:13.583020057 +0200
+@@ -14,7 +14,7 @@
+     if len(sp)==2:
+         target_prefix=sp[1]
+         print('Target is:',target_prefix)
+-sys.path.insert(0,os.path.join(target_prefix,'lib','python%i.%i' % sys.version_info[:2],'site-packages')) 
++sys.path.insert(0,os.path.join(target_prefix,'lib','python%i.%i' % sys.version_info[:2],'site-packages'))
+ 
+ sys.path.append(os.environ.get('BUILD_DIR',"build"))
+ 
+@@ -62,7 +62,7 @@
+             "cdms2.Cdunif",
+             ["Src/Cdunifmodule.c"],
+             library_dirs=[sys.prefix+'/lib'],
+-            libraries=['netcdf', 'cdms', 'grib2c', 'drs', 'png', 'jasper'],
++            libraries=['netcdf', 'cdms', 'g2c', 'png', 'jasper'],
+             define_macros=macros,
+             runtime_library_dirs=[libs_pth],
+             extra_compile_args=["-L%s" % libs_pth, "-g", "-O0"],

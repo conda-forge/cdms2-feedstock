@@ -20,9 +20,10 @@ source:
     - 0009-changes-int-to-Py_ssize_t-to-allow-PY_SSIZE_T_CLEAN.patch
     - 0010-Adds-LongLong-type-for-CDML.patch
     - 0011-remove-numpy-float-int.patch
+    - 0012-remove-libdrs-rename-libgrib2c.patch
 
 build:
-  number: 18
+  number: 19
   skip: True  # [win] 
 
 requirements:
