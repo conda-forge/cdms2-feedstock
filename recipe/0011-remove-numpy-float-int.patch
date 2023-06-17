@@ -1,8 +1,188 @@
-diff -ruN cdms-3.1.5/Lib/MV2.py cdms-3.1.5-patch/Lib/MV2.py
---- cdms-3.1.5/Lib/MV2.py	2020-07-30 19:01:33.000000000 -0600
-+++ cdms-3.1.5-patch/Lib/MV2.py	2023-02-03 00:10:41.786251432 -0700
+diff -ruN cdms-3.1.5-prev-patches/Lib/axis.py cdms-3.1.5-numpy-patch/Lib/axis.py
+--- cdms-3.1.5-prev-patches/Lib/axis.py	2023-06-17 12:46:55.655951759 +0200
++++ cdms-3.1.5-numpy-patch/Lib/axis.py	2023-06-17 13:03:30.754699498 +0200
+@@ -140,7 +140,7 @@
+         mid = int(nlat / 2)
+         lats[mid + 1:] = -lats[:mid][::-1]
+
+-    latBounds = numpy.zeros((nlat, 2), numpy.float)
++    latBounds = numpy.zeros((nlat, 2), float)
+     latBounds[:, 0] = bnds[:-1]
+     latBounds[:, 1] = bnds[1:]
+     lat = createAxis(lats, latBounds, id="latitude")
+@@ -155,7 +155,7 @@
+     import regrid2._regrid
+
+     lats, wts, bnds = regrid2._regrid.gridattr(nlat, 'equalarea')
+-    latBounds = numpy.zeros((nlat, 2), numpy.float)
++    latBounds = numpy.zeros((nlat, 2), float)
+     latBounds[:, 0] = bnds[:-1]
+     latBounds[:, 1] = bnds[1:]
+     lat = createAxis(lats, latBounds, id="latitude")
+@@ -1801,7 +1801,7 @@
+         if isinstance(key, tuple) and len(key) == 1:
+             key = key[0]
+
+-        if isinstance(key, (int, numpy.int, numpy.int32)):  # x[i]
++        if isinstance(key, (int, int, numpy.int32)):  # x[i]
+             if key >= length:
+                 raise IndexError('index out of bounds')
+             else:
+diff -ruN cdms-3.1.5-prev-patches/Lib/cdmsNode.py cdms-3.1.5-numpy-patch/Lib/cdmsNode.py
+--- cdms-3.1.5-prev-patches/Lib/cdmsNode.py	2023-06-17 12:59:39.516644811 +0200
++++ cdms-3.1.5-numpy-patch/Lib/cdmsNode.py	2023-06-17 13:03:17.178794934 +0200
+@@ -595,7 +595,7 @@
+             if numstring == '':
+                 continue
+             numlist.append(int(numstring))
+-        dataArray = numpy.array(numlist, numpy.int)
++        dataArray = numpy.array(numlist, int)
+         if len(dataArray) > 0:
+             self.partition = dataArray
+
+diff -ruN cdms-3.1.5-prev-patches/Lib/cdscan.py cdms-3.1.5-numpy-patch/Lib/cdscan.py
+--- cdms-3.1.5-prev-patches/Lib/cdscan.py	2023-06-17 12:57:44.561770968 +0200
++++ cdms-3.1.5-numpy-patch/Lib/cdscan.py	2023-06-17 13:03:30.706699838 +0200
+@@ -1125,7 +1125,7 @@
+         # is nbdate,nbsec
+         if forecast:
+             # f('nbdate') is numpy.int32 which gets truncated
+-            nbdate = numpy.int(f('nbdate'))
++            nbdate = int(f('nbdate'))
+             nbsec = f('nbsec')
+             # hopefully nbsec<(seconds per day)=86400<100000
+             fctau0 = nbdate * 100000 + nbsec
+@@ -1720,8 +1720,8 @@
+     for key in keys:
+         axis = axisdict[key]
+         tcode = axis.typecode()
+-        if tcode in [numpy.float32, numpy.float, numpy.int16,
+-                     numpy.int32, numpy.int, numpy.intc, numpy.int8]:
++        if tcode in [numpy.float32, float, numpy.int16,
++                     numpy.int32, int, numpy.intc, numpy.int8]:
+             tcode = numpy.sctype2char(tcode)
+         cdtype = cdmsNode.NumericToCdType[tcode]
+         node = cdmsNode.AxisNode(axis.id, len(axis), cdtype)
+@@ -1784,8 +1784,8 @@
+         if (excludeList is not None) and (key in excludeList):
+             continue
+         domain, attrs, tcode = vardict[key]
+-        if tcode in [numpy.float32, numpy.float, numpy.int16,
+-                     numpy.int32, numpy.int, numpy.intc, numpy.int8]:
++        if tcode in [numpy.float32, float, numpy.int16,
++                     numpy.int32, int, numpy.intc, numpy.int8]:
+             tcode = numpy.sctype2char(tcode)
+         domainNode = cdmsNode.DomainNode()
+         cdtype = cdmsNode.NumericToCdType[tcode]
+diff -ruN cdms-3.1.5-prev-patches/Lib/dataset.py cdms-3.1.5-numpy-patch/Lib/dataset.py
+--- cdms-3.1.5-prev-patches/Lib/dataset.py	2023-06-17 12:58:07.561546100 +0200
++++ cdms-3.1.5-numpy-patch/Lib/dataset.py	2023-06-17 13:03:30.738699611 +0200
+@@ -1560,7 +1560,7 @@
+         if ar is None or (unlimited == 1 and getNetcdfUseParallelFlag() == 0):
+             cufile.createDimension(str(name), None)
+             if ar is None:
+-                typecode = numpy.dtype(numpy.float).char
++                typecode = numpy.dtype(float).char
+             else:
+                 typecode = ar.dtype.char
+         else:
+@@ -2234,10 +2234,10 @@
+             v = self.createVariableCopy(var.astype(typ), attributes=attributes, axes=axes, extbounds=extbounds,
+                                         id=varid, extend=extend, fill_value=fill_value, index=index)
+
+-        # If var has typecode numpy.int, and v is created from var, then v will have
++        # If var has typecode int, and v is created from var, then v will have
+         # typecode numpy.int32. (This is a Cdunif 'feature'). This causes a downcast error
+         # for numpy versions 23+, so make the downcast explicit.
+-        if var.typecode() == numpy.int and v.typecode() == numpy.int32 and pack is False:
++        if var.typecode() == int and v.typecode() == numpy.int32 and pack is False:
+             var = var.astype(numpy.int32)
+
+         # Write
+diff -ruN cdms-3.1.5-prev-patches/Lib/gengrid.py cdms-3.1.5-numpy-patch/Lib/gengrid.py
+--- cdms-3.1.5-prev-patches/Lib/gengrid.py	2023-06-17 12:46:55.655951759 +0200
++++ cdms-3.1.5-numpy-patch/Lib/gengrid.py	2023-06-17 13:03:30.770699386 +0200
+@@ -110,21 +110,21 @@
+         cufile.createDimension("grid_corners", ncorners)
+         cufile.createDimension("grid_rank", 1)
+         griddims = cufile.createVariable(
+-            "grid_dims", numpy.int, ("grid_rank",))
++            "grid_dims", int, ("grid_rank",))
+         gridcenterlat = cufile.createVariable(
+-            "grid_center_lat", numpy.float, ("grid_size",))
++            "grid_center_lat", float, ("grid_size",))
+         gridcenterlat.units = "degrees"
+         gridcenterlon = cufile.createVariable(
+-            "grid_center_lon", numpy.float, ("grid_size",))
++            "grid_center_lon", float, ("grid_size",))
+         gridcenterlon.units = "degrees"
+         gridimask = cufile.createVariable(
+-            "grid_imask", numpy.int, ("grid_size",))
++            "grid_imask", int, ("grid_size",))
+         gridimask.units = "unitless"
+         gridcornerlat = cufile.createVariable(
+-            "grid_corner_lat", numpy.float, ("grid_size", "grid_corners"))
++            "grid_corner_lat", float, ("grid_size", "grid_corners"))
+         gridcornerlat.units = "degrees"
+         gridcornerlon = cufile.createVariable(
+-            "grid_corner_lon", numpy.float, ("grid_size", "grid_corners"))
++            "grid_corner_lon", float, ("grid_size", "grid_corners"))
+         gridcornerlon.units = "degrees"
+
+         griddims[:] = numpy.array([ngrid], numpy.int32)
+diff -ruN cdms-3.1.5-prev-patches/Lib/grid.py cdms-3.1.5-numpy-patch/Lib/grid.py
+--- cdms-3.1.5-prev-patches/Lib/grid.py	2023-06-17 12:46:55.655951759 +0200
++++ cdms-3.1.5-numpy-patch/Lib/grid.py	2023-06-17 13:03:30.722699725 +0200
+@@ -669,7 +669,7 @@
+             pts, wts, bnds = regrid2._regrid.gridattr(nlats, 'gaussian')
+             if ascending:
+                 bnds = bnds[::-1]
+-            latbnds = numpy.zeros((len(lat), 2), numpy.float)
++            latbnds = numpy.zeros((len(lat), 2), float)
+             latbnds[:, 0] = bnds[:-1]
+             latbnds[:, 1] = bnds[1:]
+             latbnds[0, :] = numpy.maximum(-90.0,
+@@ -680,7 +680,7 @@
+             pts, wts, bnds = regrid2._regrid.gridattr(nlats, 'equalarea')
+             if ascending:
+                 bnds = bnds[::-1]
+-            latbnds = numpy.zeros((len(lat), 2), numpy.float)
++            latbnds = numpy.zeros((len(lat), 2), float)
+             latbnds[:, 0] = bnds[:-1]
+             latbnds[:, 1] = bnds[1:]
+             latbnds[0, :] = numpy.maximum(-90.0,
+@@ -696,7 +696,7 @@
+             lonbnds = lon.genGenericBounds()
+         else:
+             lonbnds = numpy.array(
+-                [[lon[0] - 180.0, lon[0] + 180.0]], numpy.float)
++                [[lon[0] - 180.0, lon[0] + 180.0]], float)
+
+         return (latbnds, lonbnds)
+
+@@ -820,7 +820,7 @@
+
+         # Create corner latitudes (in yx order), ensuring counterclockwise
+         # direction
+-        cy = numpy.zeros((ny, 4), numpy.float)
++        cy = numpy.zeros((ny, 4), float)
+         if (by[0, 0] <= by[0, 1]):
+             incr = 1
+         else:
+@@ -833,7 +833,7 @@
+
+         # Create corner longitudes (in yx order), ensuring counterclockwise
+         # direction
+-        cx = numpy.zeros((nx, 4), numpy.float)
++        cx = numpy.zeros((nx, 4), float)
+         if (bx[0, 0] <= bx[0, 1]):
+             incr = 1
+         else:
+diff -ruN cdms-3.1.5-prev-patches/Lib/MV2.py cdms-3.1.5-numpy-patch/Lib/MV2.py
+--- cdms-3.1.5-prev-patches/Lib/MV2.py	2023-06-17 12:47:50.703445585 +0200
++++ cdms-3.1.5-numpy-patch/Lib/MV2.py	2023-06-17 13:05:20.833893710 +0200
 @@ -3,9 +3,9 @@
- 
+
  "CDMS Variable objects, MaskedArray interface"
  import numpy
 -from numpy import character, float, float32, float64  # noqa
@@ -14,3 +194,131 @@ diff -ruN cdms-3.1.5/Lib/MV2.py cdms-3.1.5-patch/Lib/MV2.py
  from numpy.ma import allclose, allequal, common_fill_value  # noqa
  from numpy.ma import make_mask_none, dot, filled  # noqa
  from numpy.ma import getmask, getmaskarray, identity  # noqa
+diff -ruN cdms-3.1.5-prev-patches/Lib/tvariable.py cdms-3.1.5-numpy-patch/Lib/tvariable.py
+--- cdms-3.1.5-prev-patches/Lib/tvariable.py	2023-06-17 12:51:17.761504080 +0200
++++ cdms-3.1.5-numpy-patch/Lib/tvariable.py	2023-06-17 13:03:30.762699441 +0200
+@@ -496,7 +496,7 @@
+             n = n + self.rank()
+         if self.__domain[n] is None:
+             length = numpy.ma.size(self, n)
+-            # axis = createAxis(numpy.ma.arange(numpy.ma.size(self, n), typecode=numpy.Float))
++            # axis = createAxis(numpy.ma.arange(numpy.ma.size(self, n), typecode=float))
+             axis = createAxis(
+                 numpy.ma.arange(
+                     numpy.ma.size(
+@@ -1160,7 +1160,7 @@
+         assert t.shape == s
+         assert t.missing_value == t._fill_value
+         assert numpy.ma.allclose(x, t)
+-        assert t.dtype.char == numpy.int
++        assert t.dtype.char == int
+         assert numpy.ma.size(t) == numpy.ma.size(x)
+         assert numpy.ma.size(t, 0) == len(t)
+         assert numpy.ma.allclose(
+diff -ruN cdms-3.1.5-prev-patches/Lib/variable.py cdms-3.1.5-numpy-patch/Lib/variable.py
+--- cdms-3.1.5-prev-patches/Lib/variable.py	2023-06-17 12:46:55.655951759 +0200
++++ cdms-3.1.5-numpy-patch/Lib/variable.py	2023-06-17 13:03:30.726699696 +0200
+@@ -71,7 +71,7 @@
+             self._numericType_ = cdmsNode.CdToNumericType.get(
+                 variableNode.datatype)
+         else:
+-            self._numericType_ = numpy.float
++            self._numericType_ = float
+         assert self.id is not None
+
+     def __len__(self):
+diff -ruN cdms-3.1.5-prev-patches/tests/test_axis_missing.py cdms-3.1.5-numpy-patch/tests/test_axis_missing.py
+--- cdms-3.1.5-prev-patches/tests/test_axis_missing.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_axis_missing.py	2023-06-17 13:03:30.774699357 +0200
+@@ -33,7 +33,7 @@
+         -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999. -999.
+         -999. -999. -999.
+         """.split()
+-        data = numpy.array(data, dtype=numpy.float)
++        data = numpy.array(data, dtype=float)
+         data = MV2.masked_less(data, -900)
+         d2 = cdms2.createAxis(data)
+         self.assertTrue(numpy.ma.allclose(data,d2[:]))
+diff -ruN cdms-3.1.5-prev-patches/tests/test_cdmsfile_ma_rw.py cdms-3.1.5-numpy-patch/tests/test_cdmsfile_ma_rw.py
+--- cdms-3.1.5-prev-patches/tests/test_cdmsfile_ma_rw.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_cdmsfile_ma_rw.py	2023-06-17 13:03:30.746699555 +0200
+@@ -23,7 +23,7 @@
+         lonobj = self.file.createAxis('longitude', self.lonarr)
+         lonobj.units = 'degrees_east'
+         self.var = self.file.createVariable(
+-            'u', numpy.float, (tobj, latobj, lonobj))
++            'u', float, (tobj, latobj, lonobj))
+         self.var.units = 'm/s'
+
+     def testSetSlice(self):
+diff -ruN cdms-3.1.5-prev-patches/tests/test_dataset_filemap.py cdms-3.1.5-numpy-patch/tests/test_dataset_filemap.py
+--- cdms-3.1.5-prev-patches/tests/test_dataset_filemap.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_dataset_filemap.py	2023-06-17 13:03:30.758699471 +0200
+@@ -18,7 +18,7 @@
+         NMO = 12
+         NLAT = 16
+         NLON = 32
+-        timear = numpy.ma.arange(NYR * NMO, dtype=numpy.float)
++        timear = numpy.ma.arange(NYR * NMO, dtype=float)
+         time = cdms2.createAxis(timear, id='time')
+         time.units = "months since 2000-1"
+         g = cdms2.createUniformGrid(-90.0,
+diff -ruN cdms-3.1.5-prev-patches/tests/test_longname.py cdms-3.1.5-numpy-patch/tests/test_longname.py
+--- cdms-3.1.5-prev-patches/tests/test_longname.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_longname.py	2023-06-17 13:03:30.746699555 +0200
+@@ -33,7 +33,7 @@
+         lonobj = cdms2.createAxis(id='longitude', data=lonarr)
+         lonobj.units = 'degrees_east'
+         varid = "1234567890"*26
+-        var = cdms2.createVariable(u,id=varid, typecode=numpy.float, axes=(tobj, latobj, lonobj))
++        var = cdms2.createVariable(u,id=varid, typecode=float, axes=(tobj, latobj, lonobj))
+         var.units = 'm/s'
+         with cdms2.open("bad.nc","w") as f:
+             f.write(var)
+diff -ruN cdms-3.1.5-prev-patches/tests/test_mv2.py cdms-3.1.5-numpy-patch/tests/test_mv2.py
+--- cdms-3.1.5-prev-patches/tests/test_mv2.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_mv2.py	2023-06-17 13:03:30.774699357 +0200
+@@ -106,7 +106,7 @@
+         xav3 = MV2.average(self.u_transient)
+         xav4, wav4 = MV2.average(
+             self.u_transient, weights=MV2.ones(
+-                self.u_transient.shape, numpy.float), returned=1)
++                self.u_transient.shape, float), returned=1)
+         a = MV2.arange(5)
+         b = 2 ** a
+         av, wav = MV2.average(b, weights=a, returned=1)
+@@ -124,7 +124,7 @@
+         self.assertEqual(xones.shape, self.other_u_file.shape)
+         xzeros = MV2.zeros(
+             self.u_file.shape,
+-            dtype=numpy.float,
++            dtype=float,
+             axes=self.u_file.getAxisList(),
+             attributes=self.u_file.attributes,
+             id=self.u_file.id)
+diff -ruN cdms-3.1.5-prev-patches/tests/test_numpy_nc4.py cdms-3.1.5-numpy-patch/tests/test_numpy_nc4.py
+--- cdms-3.1.5-prev-patches/tests/test_numpy_nc4.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_numpy_nc4.py	2023-06-17 13:03:30.766699413 +0200
+@@ -7,8 +7,8 @@
+ class TestNumpyWithNetCDF4(basetest.CDMSBaseTest):
+     def testTypes(self):
+         cdms2.setNetcdfClassicFlag(0)
+-        for i, t in enumerate([numpy.byte, numpy.short, numpy.int32, numpy.uint32, numpy.float, numpy.float32,
+-                               numpy.double, numpy.ubyte, numpy.ushort, numpy.int, numpy.uint, numpy.int64, numpy.uint64]):
++        for i, t in enumerate([numpy.byte, numpy.short, numpy.int32, numpy.uint32, float, numpy.float32,
++                               numpy.double, numpy.ubyte, numpy.ushort, int, numpy.uint, numpy.int64, numpy.uint64]):
+             data = numpy.array([0], dtype=t)
+             print(i,t,data.dtype,data.dtype.char)
+             var = cdms2.createVariable(data)
+diff -ruN cdms-3.1.5-prev-patches/tests/test_tvariable.py cdms-3.1.5-numpy-patch/tests/test_tvariable.py
+--- cdms-3.1.5-prev-patches/tests/test_tvariable.py	2023-06-17 12:46:55.707951283 +0200
++++ cdms-3.1.5-numpy-patch/tests/test_tvariable.py	2023-06-17 13:03:30.734699640 +0200
+@@ -86,7 +86,7 @@
+
+         saxis = axis2.subAxis(1, -1)
+         self.assertFalse(not numpy.ma.allequal(saxis[:], axis2[1:-1]))
+-        self.assertEqual(axis1.typecode(), numpy.sctype2char(numpy.float))
++        self.assertEqual(axis1.typecode(), numpy.sctype2char(float))
+         self.assertEqual(axis2.shape, (17, ))
+
+         # Axis set: bounds, calendar
