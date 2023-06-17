@@ -17,7 +17,7 @@ docker_image:
 jasper:
 - '4'
 libnetcdf:
-- 4.9.1
+- 4.9.2
 numpy:
 - '1.21'
 openblas:
