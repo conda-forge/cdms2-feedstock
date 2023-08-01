@@ -21,9 +21,10 @@ source:
     - 0010-Adds-LongLong-type-for-CDML.patch
     - 0011-remove-numpy-float-int.patch
     - 0012-remove-libdrs-rename-libgrib2c.patch
+    - 0013-esmpy-imports.patch
 
 build:
-  number: 20
+  number: 21
   skip: True  # [win] 
 
 requirements:
@@ -69,6 +70,7 @@ test:
     - python -c 'import regrid2'
     - python -c 'import regrid2._regrid'
     - python -c 'import regrid2._scrip'
+    - python -c 'from regrid2 import ESMFRegrid'
     - cdscan --help
 
 about:
