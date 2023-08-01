@@ -1,5 +1,5 @@
 {% set name = "cdms2" %}
-{% set version = "3.1.5" %}
+{% set version = "3.1.5rc4" %}
 
 package:
   name: {{ name|lower }}
@@ -21,9 +21,10 @@ source:
     - 0010-Adds-LongLong-type-for-CDML.patch
     - 0011-remove-numpy-float-int.patch
     - 0012-remove-libdrs-rename-libgrib2c.patch
+    - 0013-esmpy-imports.patch
 
 build:
-  number: 20
+  number: 0
   skip: True  # [win] 
 
 requirements:

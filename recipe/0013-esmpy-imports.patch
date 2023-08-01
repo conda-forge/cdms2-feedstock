@@ -1,0 +1,68 @@
+diff -ruN cdms-3.1.5/regrid2/Lib/esmf.py cdms-3.1.5-patch/regrid2/Lib/esmf.py
+--- cdms-3.1.5/regrid2/Lib/esmf.py	2020-07-31 03:01:33.000000000 +0200
++++ cdms-3.1.5-patch/regrid2/Lib/esmf.py	2023-08-01 09:02:26.554853011 +0200
+@@ -15,7 +15,10 @@
+ import time
+ import numpy
+ from regrid2 import RegridError
+-import ESMF
++try:
++    import esmpy as ESMF
++except ImportError:
++    import ESMF
+ from functools import reduce
+ 
+ # constants
+diff -ruN cdms-3.1.5/regrid2/Lib/__init__.py cdms-3.1.5-patch/regrid2/Lib/__init__.py
+--- cdms-3.1.5/regrid2/Lib/__init__.py	2020-07-31 03:01:33.000000000 +0200
++++ cdms-3.1.5-patch/regrid2/Lib/__init__.py	2023-08-01 09:01:50.815080096 +0200
+@@ -14,7 +14,10 @@
+ from .mvGenericRegrid import GenericRegrid  # noqa
+ from .mvLibCFRegrid import LibCFRegrid  # noqa
+ try:
+-    import ESMF
++    try:
++        import esmpy as ESMF
++    except ImportError:
++        import ESMF
+     ESMF.deprecated.__globals__[
+         'warnings'].warn_explicit = ESMF.deprecated.__globals__['warnings'].formatwarning
+     from .mvESMFRegrid import ESMFRegrid  # noqa
+@@ -24,7 +27,10 @@
+ ESMF_HAS_BEEN_INITIALIZED = False
+ if not ESMF_HAS_BEEN_INITIALIZED:
+     try:
+-        import ESMF
++        try:
++            import esmpy as ESMF
++        except ImportError:
++            import ESMF
+         ESMF.deprecated.__globals__[
+             'warnings'].warn_explicit = ESMF.deprecated.__globals__['warnings'].formatwarning
+         ESMF.Manager(debug=False)
+diff -ruN cdms-3.1.5/regrid2/Lib/mvESMFRegrid.py cdms-3.1.5-patch/regrid2/Lib/mvESMFRegrid.py
+--- cdms-3.1.5/regrid2/Lib/mvESMFRegrid.py	2020-07-31 03:01:33.000000000 +0200
++++ cdms-3.1.5-patch/regrid2/Lib/mvESMFRegrid.py	2023-08-01 09:02:26.538853112 +0200
+@@ -12,7 +12,10 @@
+ import socket
+ import numpy
+ 
+-import ESMF
++try:
++    import esmpy as ESMF
++except ImportError:
++    import ESMF
+ from . import esmf
+ from . import RegridError
+ from .mvGenericRegrid import GenericRegrid
+diff -ruN cdms-3.1.5/regrid2/Lib/mytest.py cdms-3.1.5-patch/regrid2/Lib/mytest.py
+--- cdms-3.1.5/regrid2/Lib/mytest.py	2020-07-31 03:01:33.000000000 +0200
++++ cdms-3.1.5-patch/regrid2/Lib/mytest.py	2023-08-01 09:04:07.634210699 +0200
+@@ -1,2 +1,6 @@
+-import ESMF  # noqa
++try:
++    import esmpy as ESMF  # noqa
++except ImportError:
++    import ESMF  # noqa
++
+ from .mvESMFRegrid import ESMFRegrid  # noqa
