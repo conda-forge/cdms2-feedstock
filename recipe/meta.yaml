@@ -1,13 +1,27 @@
 {% set name = "cdms2" %}
-{% set version = "3.1.5.rc3" %}
+{% set version = "3.1.5rc4" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/CDAT/cdms/archive/v{{ version }}.tar.gz
-  sha256: fb05b3500775d44e8a829bbce4b1553d9bed24227feae3a9c9f4d194053ddf80
+  url: https://github.com/CDAT/cdms/archive/v3.1.5.tar.gz
+  sha256: 2b4f2ad348581c9831d3dcb785502515da41f0d21be728c8211618871a0caed9
+  patches:
+    - 0001-fix_version-fix_readthedocs_build_failures.patch
+    - 0002-fixes_building_extensions.patch
+    - 0003-Removes-modifying-ncmode-with-NC_NETCDF4-flag.patch
+    - 0004-fix_add_env_flag_to_disable_mpi4py.patch
+    - 0005-env_flag_to_disable_mpi4py_in_regrid2.patch
+    - 0006-env_flag_to_disable_mpi4py_in_cdscan.patch
+    - 0007-fix_disable_mpi4py_in_dataset.patch
+    - 0008-fixes-missing-PY_SSIZE_T_CLEAN-define.patch
+    - 0009-changes-int-to-Py_ssize_t-to-allow-PY_SSIZE_T_CLEAN.patch
+    - 0010-Adds-LongLong-type-for-CDML.patch
+    - 0011-remove-numpy-float-int.patch
+    - 0012-remove-libdrs-rename-libgrib2c.patch
+    - 0013-esmpy-imports.patch
 
 build:
   number: 0
@@ -17,37 +31,34 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}
   host:
     - python
     - setuptools
     - cdat_info
     - numpy
-    - libcdms
-    - libdrs_f
-    - libdrs
-    - cdtime
+    - libcdms 3
+    - cdtime 3
     - openblas
     - lazy-object-proxy
     - libnetcdf
     - libnetcdf * nompi_*
+    - jasper
   run:
     - python {{ python }}
     - libcf
     - distarray
     - lazy-object-proxy
-    - cdtime
+    - cdtime 3
     - cdat_info
     - {{ pin_compatible('numpy') }}
     - esmf
     - esmpy
     - six
-    - libcdms
-    - libdrs_f
-    - libdrs
-    - cdtime
+    - libcdms 3
+    - cdtime 3
     - openblas
     - libnetcdf
+    - jasper
 
 test:
   commands:
@@ -55,6 +66,11 @@ test:
     - python -c 'import cdms2; cdms2.open("test.nc", "w")'
     - python -c 'import cdms2; cdms2.open("test.nc")'
     - python -c 'import cdms2.MV2'
+    - python -c 'import cdms2._bindex'
+    - python -c 'import regrid2'
+    - python -c 'import regrid2._regrid'
+    - python -c 'import regrid2._scrip'
+    - cdscan --help
 
 about:
   home: http://github.com/CDAT/cdms
@@ -73,7 +89,6 @@ extra:
   recipe-maintainers:
     - dnadeau4
     - doutriaux1
-    - muryanto1
     - downiec
     - jasonb5
     - xylar

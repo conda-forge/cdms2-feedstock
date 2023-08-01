@@ -1,0 +1,23 @@
+diff -ruN cdms-3.1.5/Lib/dataset.py cdms-3.1.5-patch/Lib/dataset.py
+--- cdms-3.1.5/Lib/dataset.py	2021-07-07 13:22:30.779860344 +0200
++++ cdms-3.1.5-patch/Lib/dataset.py	2021-07-07 13:23:05.811412427 +0200
+@@ -189,9 +189,6 @@
+        -------
+        No return value.
+     """
+-    if mpi_disabled:
+-        raise CDSMError("MPI support is disabled.")
+-
+     global CdMpi
+     if value not in [True, False, 0, 1]:
+         raise CDMSError(
+@@ -199,6 +196,9 @@
+     if value in [0, False]:
+         Cdunif.CdunifSetNCFLAGS("use_parallel", 0)
+     else:
++        if mpi_disabled:
++            raise CDMSError("MPI support is disabled.")
++
+         Cdunif.CdunifSetNCFLAGS("use_parallel", 1)
+         CdMpi = True
+         if not MPI.Is_initialized():

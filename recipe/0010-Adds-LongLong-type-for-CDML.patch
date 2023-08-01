@@ -1,0 +1,64 @@
+From 0aafeb5dda0cb7101f1f1c64c6392674017fb633 Mon Sep 17 00:00:00 2001
+From: Jason Boutte <boutte.jason@gmail.com>
+Date: Tue, 16 Nov 2021 17:03:00 -0800
+Subject: [PATCH 1/8] Adds LongLong type for CDML
+
+---
+ Lib/CDML.py     | 6 +++---
+ Lib/cdmsNode.py | 2 ++
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Lib/CDML.py b/Lib/CDML.py
+index e21404d..152a5ca 100644
+--- a/Lib/CDML.py
++++ b/Lib/CDML.py
+@@ -66,7 +66,7 @@ class CDML:
+         dtd = {}
+         dtd['attr'] = {
+             'name': (Cdata, Required),
+-            'datatype': (("Char", "Byte", "Short", "Int", "Long", "Int64", "Float", "Double", "String"), Required),
++            'datatype': (("Char", "Byte", "Short", "Int", "Long", "LongLong", "Int64", "Float", "Double", "String"), Required),
+         }
+         dtd['axis'] = {
+             'id': (Id, Required),
+@@ -77,7 +77,7 @@ class CDML:
+             'comment': (Cdata, Implied),
+             'component': (Cdata, Implied),
+             'compress': (Cdata, Implied),
+-            'datatype': (("Char", "Byte", "Short", "Int", "Long", "Int64", "Float", "Double", "String"), Required),
++            'datatype': (("Char", "Byte", "Short", "Int", "Long", "LongLong", "Int64", "Float", "Double", "String"), Required),
+             'expand': (Idref, Implied),
+             'interval': (Cdata, Implied),
+             'isvar': (("true", "false"), "true"),
+@@ -150,7 +150,7 @@ class CDML:
+             'associate': (Cdata, Implied),
+             'axis': (Cdata, Implied),
+             'comments': (Cdata, Implied),
+-            'datatype': (("Char", "Byte", "Short", "Int", "Long", "Int64", "Float", "Double", "String"), Required),
++            'datatype': (("Char", "Byte", "Short", "Int", "Long", "LongLong", "Int64", "Float", "Double", "String"), Required),
+             'grid_name': (Cdata, Implied),
+             'grid_type': (Cdata, Implied),
+             'long_name': (Cdata, Implied),
+diff --git a/Lib/cdmsNode.py b/Lib/cdmsNode.py
+index b0162b5..65569e2 100644
+--- a/Lib/cdmsNode.py
++++ b/Lib/cdmsNode.py
+@@ -50,6 +50,7 @@ CdDatatypes = [
+     CdInt,
+     CdUInt,
+     CdLong,
++    CdLongLong,
+     CdInt64,
+     CdFloat,
+     CdDouble,
+@@ -87,6 +88,7 @@ CdToNumericType = {CdChar: 'c',
+                    CdInt: numpy.intc,
+                    CdUInt: numpy.uintc,
+                    CdLong: numpy.int_,
++                   CdLongLong: numpy.longlong,
+                    CdInt64: numpy.int64,
+                    CdUInt64: numpy.uint64,
+                    CdULongLong: numpy.ulonglong,
+-- 
+2.25.1
+

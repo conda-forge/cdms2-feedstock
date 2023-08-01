@@ -1,0 +1,24 @@
+From 466a16c70a65e70735030c174465c52715370078 Mon Sep 17 00:00:00 2001
+From: Jason Boutte <boutte.jason@gmail.com>
+Date: Tue, 16 Nov 2021 17:03:55 -0800
+Subject: [PATCH 1/7] Fixes missing PY_SSIZE_T_CLEAN define
+
+---
+ Src/_bindexmodule.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Src/_bindexmodule.c b/Src/_bindexmodule.c
+index 78136e4..1a27a7f 100644
+--- a/Src/_bindexmodule.c
++++ b/Src/_bindexmodule.c
+@@ -1,6 +1,7 @@
+ #ifdef __CPLUSPLUS__
+ extern "C" {
+ #endif
++#define PY_SSIZE_T_CLEAN
+ #include "Python.h"
+ #include "numpy/arrayobject.h"
+ #include "py3c.h"
+-- 
+2.25.1
+
