@@ -6,7 +6,7 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/CDAT/cdms/archive/v{{ version }}.tar.gz
+  url: https://github.com/CDAT/cdms/archive/v3.1.5.tar.gz
   sha256: 2b4f2ad348581c9831d3dcb785502515da41f0d21be728c8211618871a0caed9
   patches:
     - 0001-fix_version-fix_readthedocs_build_failures.patch
