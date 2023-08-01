@@ -1,0 +1,30 @@
+From 18b88ce2d79e2d9b40f85be979729544f2b7a49b Mon Sep 17 00:00:00 2001
+From: Jason Boutte <boutte.jason@gmail.com>
+Date: Tue, 25 May 2021 16:10:46 -0700
+Subject: [PATCH 8/8] Removes modifying ncmode with NC_NETCDF4 flag
+
+---
+ Src/Cdunifmodule.c | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/Src/Cdunifmodule.c b/Src/Cdunifmodule.c
+index 62e0b98..c598bf1 100644
+--- a/Src/Cdunifmodule.c
++++ b/Src/Cdunifmodule.c
+@@ -568,13 +568,6 @@ static int cdopen(const char* controlpath, int ncmode, CuFileType *filetype) {
+ 	if (*filetype == CuUnknown)
+ 		return -1;
+ 	if (*filetype == CuNetcdf) {
+-		/* Take care for mode flag */
+-		if ((cdms_classic == 0) || (cdms_shuffle != 0) || (cdms_deflate != 0)
+-				|| (cdms_netcdf4 == 1)) {
+-		    if(strstr(controlpath, "http") == NULL){
+-		        ncmode = ncmode | NC_NETCDF4;
+-		    }
+-		}
+ #ifdef PARALLEL
+ 		/* ok we can only use MPIIO if not using shuffle or deflate for reason
+ 		 * why
+-- 
+2.25.1
+

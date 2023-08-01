@@ -1,0 +1,29 @@
+From b54167a2128c67af90b3974ac1f0b6fb4222fc91 Mon Sep 17 00:00:00 2001
+From: Jason Boutte <boutte.jason@gmail.com>
+Date: Wed, 17 Nov 2021 08:55:48 -0800
+Subject: [PATCH 6/7] Changes int to Py_ssize_t to allow PY_SSIZE_T_CLEAN
+ define
+
+---
+ Src/_bindexmodule.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Src/_bindexmodule.c b/Src/_bindexmodule.c
+index 1a27a7f..d7ed9fa 100644
+--- a/Src/_bindexmodule.c
++++ b/Src/_bindexmodule.c
+@@ -391,9 +391,9 @@ _bindex_intersect (PyObject* unused, PyObject* args) {
+     PyArrayObject* aPOINTS;
+     int ePOINTS[1];
+     char* LATIND;
+-    int nLATIND;
++    Py_ssize_t nLATIND;
+     char* LONIND;
+-    int nLONIND;
++    Py_ssize_t nLONIND;
+     aLATS = (PyArrayObject*) 0;
+     aLONS = (PyArrayObject*) 0;
+     aHEAD = (PyArrayObject*) 0;
+-- 
+2.25.1
+

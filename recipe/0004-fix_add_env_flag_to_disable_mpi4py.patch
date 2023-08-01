@@ -1,0 +1,347 @@
+diff --git a/Lib/dataset.py b/Lib/dataset.py
+index 41230d0..c2d4e0a 100644
+--- a/Lib/dataset.py
++++ b/Lib/dataset.py
+@@ -34,6 +34,7 @@ from . import convention
+ import warnings
+ from collections import OrderedDict
+ from six import string_types
++from .util import getenv_bool
+ 
+ # Default is serial mode until setNetcdfUseParallelFlag(1) is called
+ rk = 0
+@@ -41,7 +42,13 @@ sz = 1
+ Cdunif.CdunifSetNCFLAGS("use_parallel", 0)
+ CdMpi = False
+ 
++mpi_disabled = getenv_bool("CDMS_NO_MPI", "False")
++
+ try:
++    # skip trying to load mpi4py module
++    if mpi_disabled:
++        raise Exception()
++
+     from mpi4py import rc
+     rc.initialize = False
+     from mpi4py import MPI
+@@ -182,6 +189,9 @@ def setNetcdfUseParallelFlag(value):
+        -------
+        No return value.
+     """
++    if mpi_disabled:
++        raise CDSMError("MPI support is disabled.")
++
+     global CdMpi
+     if value not in [True, False, 0, 1]:
+         raise CDMSError(
+@@ -458,22 +468,29 @@ def createDataset(path, template=None):
+ #   or LDAP URL of a catalog dataset entry.
+ # 'mode' is 'r', 'r+', 'a', or 'w'
+ 
+-def openDataset(uri, mode='r', template=None,
+-                dods=1, dpath=None, hostObj=None):
+-    """
+-    Open Dataset
++def openDataset(uri, mode='r', template=None, dods=1, dpath=None, hostObj=None):
++    """Open Dataset
+ 
+     Parameters
+     ----------
+-    uri : (str) Filename to open
+-    mode : (str) Either `r`,`w`,`a` mode to open the file in read/write/append
+-    template : A string template for the datafile(s), for dataset creation
+-    dods : (int) Default set to 1
+-    dpath : (str) Destination path.
++    uri : str
++        Filename to open.
++    mode : str
++        Mode to open file with.
++        'r': Read (default)
++        'w': Write
++        'a': Append
++    template : str
++        Template for the datafile(s) used for dataset creation.
++    dods : int
++        Opens remote/local files when set to 1 or attempts to open local when set 0.
++    dpath : str
++        Destination path.
+ 
+     Returns
+     -------
+-    file handle.
++    cdms2.CdmsFile
++        Opened handle to file.
+     """
+     uri = uri.strip()
+     (scheme, netloc, path, parameters, query, fragment) = urlparse(uri)
+@@ -493,8 +510,8 @@ def openDataset(uri, mode='r', template=None,
+             # If the doesn't exist allow it to be created
+             # Ok mpi has issues with bellow we need to test this only with 1
+             # rank
+-            if not os.path.exists(path):
+-                return CdmsFile(path, mode, mpiBarrier=CdMpi)
++            if mode == "r" and not os.path.exists(path):
++                raise FileNotFoundError(path)
+             elif mode == "w":
+                 try:
+                     os.remove(path)
+@@ -502,26 +519,15 @@ def openDataset(uri, mode='r', template=None,
+                     pass
+                 return CdmsFile(path, mode, mpiBarrier=CdMpi)
+ 
+-            # The file exists
+-            file1 = CdmsFile(path, "r")
+             if libcf is not None:
+-                if hasattr(file1, libcf.CF_FILETYPE):
+-                    if getattr(
+-                            file1, libcf.CF_FILETYPE) == libcf.CF_GLATT_FILETYPE_HOST:
++                file = CdmsFile(path, mode, hostObj)
++
++                if hasattr(file, libcf.CF_FILETYPE):
++                    if getattr(file, libcf.CF_FILETYPE) == libcf.CF_GLATT_FILETYPE_HOST:
++                        file.close()
+                         file = gsHost.open(path, mode)
+-                    elif mode == 'r' and hostObj is None:
+-                        # helps performance on machines where file open (in
+-                        # CdmsFile) is costly
+-                        file = file1
+-                    else:
+-                        file = CdmsFile(path, mode, hostObj=hostObj)
+-                    file1.close()
+-                else:
+-                    file1.close()
+-                    file = CdmsFile(path, mode)
+                 return file
+             else:
+-                file1.close()
+                 return CdmsFile(path, mode)
+     elif scheme in ['http', 'gridftp', 'https']:
+ 
+@@ -975,6 +981,21 @@ class Dataset(CdmsObj, cuDataset):
+     # Create an implicit rectilinear grid. lat, lon, and mask are objects.
+     # order and type are strings
+     def createRectGrid(self, id, lat, lon, order, type="generic", mask=None):
++        """Create rectilinear grid.
++
++        Parameters
++        ----------
++        id : str
++            Identifier for the grid.
++        lat : (cdms2.TransientAxis, cdms2.FileAxis)
++            Latitude axis used to generate grid.
++        lon : (cdms2.TransientAxis, cdms2.FileAxis)
++            Longitude axis used to generate grid.
++        order : str
++            Order of axis e.g. "yx"
++        mask : (numpy.ndarray)
++            Array containing mask.
++        """
+         node = cdmsNode.RectGridNode(id, lat.id, lon.id, type, order, mask.id)
+         grid = RectGrid(self, node)
+         grid.initDomain(self.axes, self.variables)
+@@ -1266,16 +1287,12 @@ class CdmsFile(CdmsObj, cuDataset):
+         else:
+             self.uri = "file://" + os.path.abspath(os.path.expanduser(path))
+         self._mode_ = mode
+-        try:
+-            if mode[0].lower() == "w":
+-                try:
+-                    os.remove(path)
+-                except BaseException:
+-                    pass
+-            _fileobj_ = Cdunif.CdunifFile(path, mode)
+-        except Exception as err:
+-            raise CDMSError('Cannot open file %s (%s)' % (path, err))
+-        self._file_ = _fileobj_   # Cdunif file object
++        if mode[0].lower() == "w":
++            try:
++                os.remove(path)
++            except BaseException:
++                pass
++        self._file_ = Cdunif.CdunifFile(path, mode)
+         self.variables = {}
+         self.axes = {}
+         self.grids = {}
+@@ -1523,8 +1540,7 @@ class CdmsFile(CdmsObj, cuDataset):
+     # Set unlimited to true to designate the axis as unlimited
+     # Return an axis object.
+     def createAxis(self, name, ar, unlimited=0):
+-        """
+-        Create an axis.
++        """ Create an axis.
+ 
+         Parameters
+         ----------
+@@ -2160,7 +2176,6 @@ class CdmsFile(CdmsObj, cuDataset):
+         if _showCompressWarnings:
+             if (Cdunif.CdunifGetNCFLAGS("shuffle") != 0) or (Cdunif.CdunifGetNCFLAGS(
+                     "deflate") != 0) or (Cdunif.CdunifGetNCFLAGS("deflate_level") != 0):
+-                import warnings
+                 warnings.warn("Files are written with compression and no shuffling\n" +
+                               "You can query different values of compression using the functions:\n" +
+                               "cdms2.getNetcdfShuffleFlag() returning 1 if shuffling is enabled, " +
+diff --git a/Lib/tvariable.py b/Lib/tvariable.py
+index 9f73ad9..e6fe865 100644
+--- a/Lib/tvariable.py
++++ b/Lib/tvariable.py
+@@ -22,10 +22,16 @@ from .grid import createRectGrid, AbstractRectGrid
+ from .hgrid import AbstractCurveGrid
+ from .gengrid import AbstractGenericGrid
+ from six import string_types, PY2
++from .util import getenv_bool
++
++mpi_disabled = getenv_bool("CDMS_NO_MPI", "False")
+ 
+ # dist array support
+ HAVE_MPI = False
+ try:
++    if mpi_disabled:
++        raise Exception()
++
+     from mpi4py import MPI
+     HAVE_MPI = True
+ except BaseException:
+@@ -80,7 +86,51 @@ def fromJSON(jsn):
+ 
+ 
+ class TransientVariable(AbstractVariable, numpy.ma.MaskedArray):
+-    "An in-memory variable."
++    """Variable in-memory.
++
++    To enabled automatic bounds generation see ``setAutoBounds``.
++
++    Parameters
++    ----------
++    data : numpy.ndarray
++        NDArray containing variable data.
++    typecode : (float, int, np.dtype)
++        Sets the dtype of the underlying masked array.
++    copy : int
++        0: Stores reference of data.
++        1: Stores copy of data.
++    savespace : int
++        Deprecated.
++    mask : numpy.ndarray
++        Mask passed to the underlying masked array.
++    fill_value : float
++        Sets the value to use when data is missing.
++    grid
++        Sets the grid of the variable.
++    axes : list of (cdms2.TransientAxis, cdms2.FileAxis)
++        Sets the list of axes associated with the variable.
++    attributes : dict
++        Mapping of attribute names and values.
++    id : str
++        Identifier for the variable.
++    copyaxes : int
++        0: Stores reference to axes.
++        1: Stores copies of axes.
++    dtype : (float, int, np.dtype)
++        Sets the dtype of the underlying masked array.
++    order : str
++        Sets the order for the underlying masked array (`Masked Array`_).
++    no_update_from : bool
++        If ``False`` and ``axes`` is None, then axes will be generated from ``data``.
++        If ``False`` and ``grid`` is None, then an attempt to get a grid from the ``data`` will be made.
++        Set to ``True`` will prevent the above behavior.
++    **kargs
++        Unused.
++
++    .. _Masked Array:
++        https://numpy.org/doc/stable/reference/generated/numpy.ma.array.html
++    """
++
+     variable_count = 0
+     _missing = numpy.ma.MaskedArray.fill_value
+ 
+@@ -1003,6 +1053,59 @@ class TransientVariable(AbstractVariable, numpy.ma.MaskedArray):
+ 
+ 
+ def createVariable(*args, **kargs):
++    """Creates variable in-memory.
++
++    To enabled automatic bounds generation see ``setAutoBounds``.
++
++    Parameters
++    ----------
++    data : numpy.ndarray
++        NDArray containing variable data.
++    typecode : (float, int, np.dtype)
++        Sets the dtype of the underlying masked array.
++    copy : int
++        0: Stores reference of data.
++        1: Stores copy of data.
++    savespace : int
++        Deprecated.
++    mask : numpy.ndarray
++        Mask passed to the underlying masked array.
++    fill_value : float
++        Sets the value to use when data is missing.
++    grid
++        Sets the grid of the variable.
++    axes : list of (cdms2.TransientAxis, cdms2.FileAxis)
++        Sets the list of axes associated with the variable.
++    attributes : dict
++        Mapping of attribute names and values.
++    id : str
++        Identifier for the variable.
++    copyaxes : int
++        0: Stores reference to axes.
++        1: Stores copies of axes.
++    dtype : (float, int, np.dtype)
++        Sets the dtype of the underlying masked array.
++    order : str
++        Sets the order for the underlying masked array (`Masked Array`_).
++    no_update_from : bool
++        If ``False`` and ``axes`` is None, then axes will be generated from ``data``.
++        If ``False`` and ``grid`` is None, then an attempt to get a grid from the ``data`` will be made.
++        Set to ``True`` will prevent the above behavior.
++    *args
++        Url to JSON file if ``fromJSON`` is in kwargs.
++    **kargs
++        - fromJSON : bool
++            Load variable from JSON.
++
++    .. _Masked Array:
++        https://numpy.org/doc/stable/reference/generated/numpy.ma.array.html
++
++    Examples
++    --------
++    >>> v1 = createVariable(np.random.random(size=(200,200)), typecode=float, fill_value=123)
++
++    >>> v2 = createVariable('data.json', fromJSON=True)
++    """
+     if kargs.get("fromJSON", False):
+         return fromJSON(*args)
+     else:
+diff --git a/Lib/util.py b/Lib/util.py
+new file mode 100644
+index 0000000..38ffa2d
+--- /dev/null
++++ b/Lib/util.py
+@@ -0,0 +1,25 @@
++import os
++
++from .error import CDMSError
++
++def base_doc(base):
++    def wrapper(fn):
++        doc = getattr(base, fn.__name__).__doc__
++        fn.__doc__ = doc
++        return fn
++    return wrapper
++
++valid_bool_str = ["true", "false"]
++
++def getenv_bool(name, default=None):
++    value = os.environ.get(name, default)
++
++    if value is None:
++        raise CDMSError("{!r} was not set".format(name))
++
++    if value.lower() not in valid_bool_str:
++        raise CDMSError(
++            "{!r} is not a valid value for {!r}, allowed values: {!r}".format(
++                value, name, valid_bool_str))
++
++    return True if value.lower() == "true" else False
