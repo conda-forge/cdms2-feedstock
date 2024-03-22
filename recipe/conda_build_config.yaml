@@ -1,0 +1,5 @@
+# It seems that clang 16 doesn't work for cdms2
+c_compiler_version:         # [osx]
+  - 15                      # [osx]
+cxx_compiler_version:       # [osx]
+  - 15                      # [osx]
