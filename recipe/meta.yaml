@@ -25,7 +25,7 @@ source:
 
 build:
   number: 22
-  skip: True  # [win or python>=311] 
+  skip: True  # [win or py>=311] 
 
 requirements:
   build:
