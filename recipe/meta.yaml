@@ -24,8 +24,8 @@ source:
     - 0013-esmpy-imports.patch
 
 build:
-  number: 21
-  skip: True  # [win] 
+  number: 22
+  skip: True  # [win or py>=311] 
 
 requirements:
   build:
