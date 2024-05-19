@@ -24,12 +24,13 @@ source:
     - 0013-esmpy-imports.patch
 
 build:
-  number: 22
+  number: 23
   skip: True  # [win or py>=311] 
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
   host:
     - python
@@ -50,7 +51,6 @@ requirements:
     - lazy-object-proxy
     - cdtime 3
     - cdat_info
-    - {{ pin_compatible('numpy') }}
     - esmf
     - esmpy
     - six
