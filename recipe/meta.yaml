@@ -24,18 +24,20 @@ source:
     - 0013-esmpy-imports.patch
 
 build:
-  number: 22
+  number: 23
   skip: True  # [win or py>=311] 
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib("c") }}
     - {{ compiler('cxx') }}
+    - {{ compiler('fortran') }}
   host:
     - python
     - setuptools
     - cdat_info
-    - numpy
+    - numpy <2.0.0a0
     - libcdms 3
     - cdtime 3
     - openblas
@@ -50,7 +52,6 @@ requirements:
     - lazy-object-proxy
     - cdtime 3
     - cdat_info
-    - {{ pin_compatible('numpy') }}
     - esmf
     - esmpy
     - six
@@ -59,6 +60,7 @@ requirements:
     - openblas
     - libnetcdf
     - jasper
+    - numpy <2.0.0a0
 
 test:
   commands:
