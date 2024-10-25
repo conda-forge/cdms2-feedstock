@@ -37,7 +37,7 @@ requirements:
     - python
     - setuptools <60
     - cdat_info
-    - numpy <2.0.0a0
+    - numpy
     - libcdms 3
     - cdtime 3
     - openblas
@@ -60,7 +60,7 @@ requirements:
     - openblas
     - libnetcdf
     - jasper
-    - numpy <2.0.0a0
+    - numpy
 
 test:
   commands:
