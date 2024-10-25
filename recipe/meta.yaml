@@ -23,6 +23,7 @@ source:
     - 0012-remove-libdrs-rename-libgrib2c.patch
     - 0013-esmpy-imports.patch
     - 0014-numpy-get-include.patch
+    - 0015-pyarray-to-npy.patch
 
 build:
   number: 23

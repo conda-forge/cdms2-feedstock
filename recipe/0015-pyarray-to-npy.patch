@@ -1,0 +1,169 @@
+diff -ruN cdms-3.1.5/regrid2/Src/_regridmodule.c cdms-3.1.5-patch/regrid2/Src/_regridmodule.c
+--- cdms-3.1.5/regrid2/Src/_regridmodule.c	2020-07-30 19:01:33.000000000 -0600
++++ cdms-3.1.5-patch/regrid2/Src/_regridmodule.c	2024-10-25 09:43:36.529826169 -0600
+@@ -165,13 +165,13 @@
+   /* create the 1D python array objects */
+   npsize = (npy_intp) size;
+   npsizep = (npy_intp) sizep;
+-  object_pts = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&npsize, PyArray_DOUBLE);
++  object_pts = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&npsize, NPY_DOUBLE);
+   if(!object_pts) PyErr_NoMemory();
+ 
+-  object_wts = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&npsize, PyArray_DOUBLE);
++  object_wts = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&npsize, NPY_DOUBLE);
+   if(!object_wts) PyErr_NoMemory();
+ 
+-  object_bnds = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&npsizep, PyArray_DOUBLE);
++  object_bnds = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&npsizep, NPY_DOUBLE);
+   if(!object_bnds) PyErr_NoMemory();
+ 
+   /* use pointers to the data attribute in the python array  objects */
+@@ -287,10 +287,10 @@
+   np_nlevp = (npy_intp) nlevp;
+   /* create the 1D python array objects */
+ 
+-  object_wts = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlev, PyArray_DOUBLE);
++  object_wts = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlev, NPY_DOUBLE);
+   if(!object_wts) PyErr_NoMemory();
+ 
+-  object_bnds = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlevp, PyArray_DOUBLE);
++  object_bnds = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlevp, NPY_DOUBLE);
+   if(!object_bnds) PyErr_NoMemory();
+ 
+   /* use pointers to the data attribute in the python array  objects */
+@@ -598,22 +598,22 @@
+ 
+     /* create the 1D python array objects */
+ 
+-    object_londx = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlono, PyArray_INT);
++    object_londx = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlono, NPY_INT);
+     if(object_londx==NULL) PyErr_NoMemory();
+ 
+-    object_lonpt = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlonsize, PyArray_INT);
++    object_lonpt = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlonsize, NPY_INT);
+     if(object_lonpt==NULL) PyErr_NoMemory();
+ 
+-    object_wtlon = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlonsize, PyArray_FLOAT);
++    object_wtlon = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlonsize, NPY_FLOAT);
+     if(object_wtlon==NULL) PyErr_NoMemory();
+ 
+-    object_latdx = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlato, PyArray_INT);
++    object_latdx = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlato, NPY_INT);
+     if(object_latdx==NULL) PyErr_NoMemory();
+ 
+-    object_latpt = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, PyArray_INT);
++    object_latpt = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, NPY_INT);
+     if(object_latpt==NULL) PyErr_NoMemory();
+ 
+-    object_wtlat = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, PyArray_FLOAT);
++    object_wtlat = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, NPY_FLOAT);
+     if(object_wtlat==NULL) PyErr_NoMemory();
+ 
+ 
+@@ -1125,7 +1125,7 @@
+     np_dim_array[1]=(npy_intp)dim_array[1];
+     np_dim_array[2]=(npy_intp)dim_array[2];
+     np_dim_array[3]=(npy_intp)dim_array[3];
+-    object_amskout = (PyArrayObject *)PyArray_SimpleNew(number_dim, (npy_intp *)&np_dim_array, PyArray_FLOAT);
++    object_amskout = (PyArrayObject *)PyArray_SimpleNew(number_dim, (npy_intp *)&np_dim_array, NPY_FLOAT);
+     if(!object_amskout) PyErr_NoMemory();
+ 
+     amskout  = (float *)object_amskout->data; 
+@@ -1691,13 +1691,13 @@
+     np_nlato = (npy_intp) nlato;
+     /* create the 1D python array objects */
+ 
+-    object_latdx = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlato, PyArray_INT);
++    object_latdx = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlato, NPY_INT);
+     if(!object_latdx) PyErr_NoMemory();
+ 
+-    object_latpt = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, PyArray_INT);
++    object_latpt = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, NPY_INT);
+     if(!object_latpt) PyErr_NoMemory();
+ 
+-    object_wtlat = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, PyArray_FLOAT);
++    object_wtlat = (PyArrayObject *)PyArray_SimpleNew(1, (npy_intp *)&np_nlatsize, NPY_FLOAT);
+     if(!object_wtlat) PyErr_NoMemory();
+ 
+ 
+diff -ruN cdms-3.1.5/Src/_bindexmodule.c cdms-3.1.5-patch/Src/_bindexmodule.c
+--- cdms-3.1.5/Src/_bindexmodule.c	2020-07-30 19:01:33.000000000 -0600
++++ cdms-3.1.5-patch/Src/_bindexmodule.c	2024-10-25 09:43:36.532826228 -0600
+@@ -153,13 +153,13 @@
+ 
+ static PyArrayObject*
+ do_array_in (char* rname, char* vname, PyObject *v, 
+-    enum PyArray_TYPES python_array_type)
++    enum NPY_TYPES python_array_type)
+ {
+     PyArrayObject* av;
+     PyArrayObject* t;
+ 
+     if(!PyArray_Check (v)) {
+-        t = (PyArrayObject *) PyArray_ContiguousFromObject(v, PyArray_NOTYPE, 0, 0);
++        t = (PyArrayObject *) PyArray_ContiguousFromObject(v, NPY_NOTYPE, 0, 0);
+         if (!t) {
+             set_pyfort_error(rname, vname, "Argument cannot be converted to needed array.");
+             goto err;
+@@ -185,7 +185,7 @@
+ 
+ static PyArrayObject*
+ do_array_inout (char* rname, char* vname, PyObject *v, 
+-    enum PyArray_TYPES python_array_type)
++    enum NPY_TYPES python_array_type)
+ {
+     PyArrayObject* av;
+ 
+@@ -209,7 +209,7 @@
+ }
+ 
+ static PyArrayObject*
+-do_array_create (char* rname, char* vname, enum PyArray_TYPES python_array_type, 
++do_array_create (char* rname, char* vname, enum NPY_TYPES python_array_type, 
+     int rank, int extents[], int mirror)
+ {
+     PyArrayObject* av;
+@@ -270,10 +270,10 @@
+     if(!PyArg_ParseTuple(args, "OOOO|i", &LATS, &LONS, &HEAD, &NEXT, &keyoption)) {
+         return NULL;
+     }
+-    if (!(aLATS = do_array_in ("bindex", "LATS", LATS, PyArray_DOUBLE))) goto err;
+-    if (!(aLONS = do_array_in ("bindex", "LONS", LONS, PyArray_DOUBLE))) goto err;
+-    if (!(aHEAD = do_array_inout ("bindex", "HEAD", HEAD, PyArray_LONG))) goto err;
+-    if (!(aNEXT = do_array_inout ("bindex", "NEXT", NEXT, PyArray_LONG))) goto err;
++    if (!(aLATS = do_array_in ("bindex", "LATS", LATS, NPY_DOUBLE))) goto err;
++    if (!(aLONS = do_array_in ("bindex", "LONS", LONS, NPY_DOUBLE))) goto err;
++    if (!(aHEAD = do_array_inout ("bindex", "HEAD", HEAD, NPY_LONG))) goto err;
++    if (!(aNEXT = do_array_inout ("bindex", "NEXT", NEXT, NPY_LONG))) goto err;
+     NGRID = get_fortran_dim(aLATS, 1);
+     NBINS = get_fortran_dim(aHEAD, 1);
+     eLATS[0] = NGRID;
+@@ -403,11 +403,11 @@
+     if(!PyArg_ParseTuple(args, "ddddOOOOOs#s#|i", &SLAT, &SLON, &ELAT, &ELON, &LATS, &LONS, &HEAD, &NEXT, &POINTS, &LATIND, &nLATIND, &LONIND, &nLONIND, &keyoption)) {
+         return NULL;
+     }
+-    if (!(aLATS = do_array_in ("intersect", "LATS", LATS, PyArray_DOUBLE))) goto err;
+-    if (!(aLONS = do_array_in ("intersect", "LONS", LONS, PyArray_DOUBLE))) goto err;
+-    if (!(aHEAD = do_array_in ("intersect", "HEAD", HEAD, PyArray_LONG))) goto err;
+-    if (!(aNEXT = do_array_in ("intersect", "NEXT", NEXT, PyArray_LONG))) goto err;
+-    if (!(aPOINTS = do_array_inout ("intersect", "POINTS", POINTS, PyArray_LONG))) goto err;
++    if (!(aLATS = do_array_in ("intersect", "LATS", LATS, NPY_DOUBLE))) goto err;
++    if (!(aLONS = do_array_in ("intersect", "LONS", LONS, NPY_DOUBLE))) goto err;
++    if (!(aHEAD = do_array_in ("intersect", "HEAD", HEAD, NPY_LONG))) goto err;
++    if (!(aNEXT = do_array_in ("intersect", "NEXT", NEXT, NPY_LONG))) goto err;
++    if (!(aPOINTS = do_array_inout ("intersect", "POINTS", POINTS, NPY_LONG))) goto err;
+     NGRID = get_fortran_dim(aLATS, 1);
+     NBINS = get_fortran_dim(aHEAD, 1);
+     eLATS[0] = NGRID;
+diff -ruN cdms-3.1.5/Src/Cdunifmodule.c cdms-3.1.5-patch/Src/Cdunifmodule.c
+--- cdms-3.1.5/Src/Cdunifmodule.c	2020-07-30 19:01:33.000000000 -0600
++++ cdms-3.1.5-patch/Src/Cdunifmodule.c	2024-10-25 09:43:36.546826500 -0600
+@@ -1292,7 +1292,7 @@
+ 		char **aszUnicodes=NULL;
+ 		int ret;
+ 		PyArrayObject *array = (PyArrayObject *) PyArray_ContiguousFromObject(
+-				value, PyArray_NOTYPE, 0, 1);
++				value, NPY_NOTYPE, 0, 1);
+ 		if (array != NULL) {
+ 			int len = (array->nd == 0) ? 1 : array->dimensions[0];
+ 			int type = cdunif_type_from_code(array->descr->type);
