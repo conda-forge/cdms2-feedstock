@@ -22,17 +22,19 @@ source:
     - 0011-remove-numpy-float-int.patch
     - 0012-remove-libdrs-rename-libgrib2c.patch
     - 0013-esmpy-imports.patch
+    - 0014-numpy-get-include.patch
+    - 0015-pyarray-to-npy.patch
+    - 0016-numpy-2.0.patch
 
 build:
   number: 23
-  skip: True  # [win or py>=311] 
+  skip: True  # [win or py>=311]
 
 requirements:
   build:
     - {{ compiler('c') }}
     - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}
   host:
     - python
     - setuptools <60
@@ -52,7 +54,6 @@ requirements:
     - lazy-object-proxy
     - cdtime 3
     - cdat_info
-    - {{ pin_compatible('numpy') }}
     - esmf
     - esmpy
     - six
@@ -61,6 +62,7 @@ requirements:
     - openblas
     - libnetcdf
     - jasper
+    - numpy
 
 test:
   commands:

@@ -1,0 +1,118 @@
+diff -ruN --no-dereference cdms-3.1.5/Lib/cdscan.py cdms-3.1.5-patch/Lib/cdscan.py
+--- cdms-3.1.5/Lib/cdscan.py	2024-10-25 14:25:33.706237619 -0600
++++ cdms-3.1.5-patch/Lib/cdscan.py	2024-10-25 14:37:20.555341630 -0600
+@@ -1722,7 +1722,7 @@
+         tcode = axis.typecode()
+         if tcode in [numpy.float32, float, numpy.int16,
+                      numpy.int32, int, numpy.intc, numpy.int8]:
+-            tcode = numpy.sctype2char(tcode)
++            tcode = numpy.dtype(tcode).char
+         cdtype = cdmsNode.NumericToCdType[tcode]
+         node = cdmsNode.AxisNode(axis.id, len(axis), cdtype)
+ 
+@@ -1786,7 +1786,7 @@
+         domain, attrs, tcode = vardict[key]
+         if tcode in [numpy.float32, float, numpy.int16,
+                      numpy.int32, int, numpy.intc, numpy.int8]:
+-            tcode = numpy.sctype2char(tcode)
++            tcode = numpy.dtype(tcode).char
+         domainNode = cdmsNode.DomainNode()
+         cdtype = cdmsNode.NumericToCdType[tcode]
+         node = cdmsNode.VariableNode(key, cdtype, domainNode)
+diff -ruN --no-dereference cdms-3.1.5/Lib/MV2.py cdms-3.1.5-patch/Lib/MV2.py
+--- cdms-3.1.5/Lib/MV2.py	2024-10-25 14:25:33.708237624 -0600
++++ cdms-3.1.5-patch/Lib/MV2.py	2024-10-25 14:37:46.614843301 -0600
+@@ -12,7 +12,7 @@
+ from numpy.ma import indices, innerproduct, masked, put, putmask, ravel  # noqa
+ from numpy.ma import set_fill_value, shape, size, isMA, isMaskedArray, is_mask, isarray  # noqa
+ from numpy.ma import make_mask, mask_or, nomask   # noqa
+-from numpy import sctype2char, get_printoptions, set_printoptions
++from numpy import get_printoptions, set_printoptions
+ from cdms2.avariable import AbstractVariable, getNumericCompatibility
+ from cdms2.tvariable import TransientVariable, asVariable
+ from cdms2.grid import AbstractRectGrid
+@@ -950,7 +950,7 @@
+     """
+     dtype = _convdtype(dtype, typecode)
+     if isinstance(data, AbstractVariable) and (
+-            dtype is None or sctype2char(dtype) == data.dtype.char):
++            dtype is None or numpy.dtype(dtype).char == data.dtype.char):
+         return data
+     else:
+         F = getattr(data, "fill_value", 1.e20)
+diff -ruN --no-dereference cdms-3.1.5/Lib/tvariable.py cdms-3.1.5-patch/Lib/tvariable.py
+--- cdms-3.1.5/Lib/tvariable.py	2024-10-25 14:25:33.708237624 -0600
++++ cdms-3.1.5-patch/Lib/tvariable.py	2024-10-25 14:38:20.000237498 -0600
+@@ -13,7 +13,6 @@
+ import numpy
+ import zlib  # for pickling JSON
+ 
+-from numpy import sctype2char
+ from .error import CDMSError
+ from .avariable import AbstractVariable
+ 
+@@ -256,7 +255,7 @@
+         if dtype is None and typecode is not None:
+             #            dtype = typeconv.convtypecode2(typecode)
+             dtype = typecode
+-        typecode = sctype2char(dtype)
++        typecode = numpy.dtype(dtype).char
+         if isinstance(data, tuple):
+             data = list(data)
+ 
+@@ -393,7 +392,7 @@
+         if dtype is None and typecode is not None:
+             #            dtype = typeconv.convtypecode2(typecode)
+             dtype = typecode
+-        typecode = sctype2char(dtype)
++        typecode = numpy.dtype(dtype).char
+         if isinstance(data, tuple):
+             data = list(data)
+         if isinstance(data, AbstractVariable):
+diff -ruN --no-dereference cdms-3.1.5/setup.py cdms-3.1.5-patch/setup.py
+--- cdms-3.1.5/setup.py	2024-10-25 14:25:33.716237643 -0600
++++ cdms-3.1.5-patch/setup.py	2024-10-25 15:30:52.933699336 -0600
+@@ -84,6 +84,7 @@
+             ["regrid2/Src/scrip.pyf", "regrid2/Src/regrid.c"],
+             runtime_library_dirs=[libs_pth],
+             extra_compile_args=["-L%s" % libs_pth],
++            f2py_options = ['--skip-empty-wrappers'],
+         ),
+     ],
+ )
+diff -ruN --no-dereference cdms-3.1.5/Src/_bindexmodule.c cdms-3.1.5-patch/Src/_bindexmodule.c
+--- cdms-3.1.5/Src/_bindexmodule.c	2024-10-25 14:25:33.719237651 -0600
++++ cdms-3.1.5-patch/Src/_bindexmodule.c	2024-10-25 14:40:28.599207390 -0600
+@@ -12,7 +12,7 @@
+       int sd;
+       int i;
+ 
+-      sd = ap->descr->elsize;
++      sd = PyArray_ITEMSIZE(ap);
+       for (i = ap->nd-1; i >= 0; --i) {
+               if (ap->dimensions[i] == 0) return 1; /* contiguous by definition */
+               if (ap->strides[i] != sd) return 0;
+diff -ruN --no-dereference cdms-3.1.5/tests/test_mv2.py cdms-3.1.5-patch/tests/test_mv2.py
+--- cdms-3.1.5/tests/test_mv2.py	2024-10-25 14:25:33.709237626 -0600
++++ cdms-3.1.5-patch/tests/test_mv2.py	2024-10-25 14:38:39.913892707 -0600
+@@ -86,7 +86,7 @@
+     def testTypeCoercion(self):
+         x9 = 3 * self.u_file[:]
+         x15 = x9.astype(numpy.float32)
+-        self.assertTrue(x15.dtype.char == numpy.sctype2char(numpy.float32))
++        self.assertTrue(x15.dtype.char == numpy.dtype(numpy.float32).char)
+ 
+     def testArange(self):
+         test_range = MV2.arange(16, axis=self.u_lat)
+diff -ruN --no-dereference cdms-3.1.5/tests/test_tvariable.py cdms-3.1.5-patch/tests/test_tvariable.py
+--- cdms-3.1.5/tests/test_tvariable.py	2024-10-25 14:25:33.709237626 -0600
++++ cdms-3.1.5-patch/tests/test_tvariable.py	2024-10-25 14:38:57.551597191 -0600
+@@ -86,7 +86,7 @@
+ 
+         saxis = axis2.subAxis(1, -1)
+         self.assertFalse(not numpy.ma.allequal(saxis[:], axis2[1:-1]))
+-        self.assertEqual(axis1.typecode(), numpy.sctype2char(float))
++        self.assertEqual(axis1.typecode(), numpy.dtype(float).char)
+         self.assertEqual(axis2.shape, (17, ))
+ 
+         # Axis set: bounds, calendar

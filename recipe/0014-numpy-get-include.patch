@@ -1,0 +1,12 @@
+diff -ruN cdms-3.1.5/setup.py cdms-3.1.5-patch/setup.py
+--- cdms-3.1.5/setup.py	2024-10-25 08:51:16.342481986 -0600
++++ cdms-3.1.5-patch/setup.py	2024-10-25 08:52:42.047220189 -0600
+@@ -51,7 +51,7 @@
+         "regrid2": "regrid2/Lib"
+     },
+     py_modules=["MV2"],
+-    include_dirs=["Include", "Include/py3c", numpy.lib.utils.get_include()]
++    include_dirs=["Include", "Include/py3c", numpy.get_include()]
+     + cdat_info.cdunif_include_directories,
+     scripts=["Script/cdscan", "Script/convertcdms.py", "Script/myproxy_logon"],
+     data_files=[
