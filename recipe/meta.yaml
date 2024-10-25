@@ -24,6 +24,7 @@ source:
     - 0013-esmpy-imports.patch
     - 0014-numpy-get-include.patch
     - 0015-pyarray-to-npy.patch
+    - 0016-numpy-2.0.patch
 
 build:
   number: 23
