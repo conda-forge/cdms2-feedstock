@@ -22,6 +22,7 @@ source:
     - 0011-remove-numpy-float-int.patch
     - 0012-remove-libdrs-rename-libgrib2c.patch
     - 0013-esmpy-imports.patch
+    - 0014-numpy-get-include.patch
 
 build:
   number: 23
