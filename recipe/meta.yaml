@@ -35,7 +35,7 @@ requirements:
     - {{ compiler('fortran') }}
   host:
     - python
-    - setuptools
+    - setuptools <60
     - cdat_info
     - numpy
     - libcdms 3
