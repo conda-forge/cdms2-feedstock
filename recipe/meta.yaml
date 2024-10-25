@@ -25,7 +25,7 @@ source:
 
 build:
   number: 23
-  skip: True  # [win or py>=311] 
+  skip: True  # [win or py>=311]
 
 requirements:
   build:
@@ -52,7 +52,6 @@ requirements:
     - lazy-object-proxy
     - cdtime 3
     - cdat_info
-    - {{ pin_compatible('numpy') }}
     - esmf
     - esmpy
     - six
