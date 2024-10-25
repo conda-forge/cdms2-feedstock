@@ -24,13 +24,15 @@ source:
     - 0013-esmpy-imports.patch
 
 build:
-  number: 22
+  number: 23
   skip: True  # [win or py>=311] 
 
 requirements:
   build:
     - {{ compiler('c') }}
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
+    - {{ compiler('fortran') }}
   host:
     - python
     - setuptools
