@@ -25,9 +25,10 @@ source:
     - 0014-numpy-get-include.patch
     - 0015-pyarray-to-npy.patch
     - 0016-numpy-2.0.patch
+    - 0017-more-numpy-2.0.patch
 
 build:
-  number: 23
+  number: 24
   skip: True  # [win or py>=311]
 
 requirements:

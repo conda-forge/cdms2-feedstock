@@ -1,0 +1,12 @@
+diff -ruN --no-dereference cdms-3.1.5/Lib/tvariable.py cdms-3.1.5-patch/Lib/tvariable.py
+--- cdms-3.1.5/Lib/tvariable.py	2020-07-30 19:01:33.000000000 -0600
++++ cdms-3.1.5-patch/Lib/tvariable.py	2024-10-28 18:25:25.151789747 -0600
+@@ -452,7 +452,7 @@
+                     numpy.ma.size(
+                         self,
+                         n),
+-                    dtype=numpy.float_))
++                    dtype=numpy.float64))
+             axis.id = "axis_" + str(n)
+             self.__domain[n] = (axis, 0, length, length)
+         return self.__domain[n][0]
