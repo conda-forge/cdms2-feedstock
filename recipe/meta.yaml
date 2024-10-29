@@ -28,7 +28,7 @@ source:
     - 0017-more-numpy-2.0.patch
 
 build:
-  number: 24
+  number: 25
   skip: True  # [win or py>=311]
 
 requirements:
